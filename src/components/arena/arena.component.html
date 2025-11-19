@@ -8,51 +8,67 @@
     </div>
 
     <!-- Arena Board -->
-    <div #arenaBoard (click)="placeTroopOnArena($event)"
-         class="w-full aspect-[9/12] bg-gradient-to-b from-green-700 to-lime-600 border-4 border-yellow-800 rounded-lg relative overflow-hidden shadow-2xl"
+    <div #arenaBoard (click)="playCardOnArena($event)"
+         class="w-full aspect-[9/12] border-4 border-yellow-800 rounded-lg relative overflow-hidden shadow-2xl"
          [class.cursor-copy]="selectedCardIndex() !== null && gameStatus() === 'playing'"
-         style="--arena-w: 540px; --arena-h: 720px;">
+         style="background-image: url('https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/bg.jpg'); background-size: cover;">
         
         <!-- River -->
-        <div class="absolute top-1/2 left-0 w-full h-12 bg-blue-500 -translate-y-1/2 border-y-4 border-blue-300"></div>
-        <div class="absolute top-1/2 left-1/4 w-10 h-16 bg-yellow-700 -translate-y-1/2 border-2 border-yellow-900 rounded-sm"></div>
-        <div class="absolute top-1/2 right-1/4 w-10 h-16 bg-yellow-700 -translate-y-1/2 border-2 border-yellow-900 rounded-sm"></div>
+        <div class="absolute top-1/2 left-0 w-full h-12 bg-blue-500/80 -translate-y-1/2 border-y-4 border-blue-300/50 backdrop-blur-sm"></div>
+        <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/bridge.png" alt="Bridge" class="absolute top-1/2 left-1/4 w-16 h-auto -translate-y-1/2">
+        <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/bridge.png" alt="Bridge" class="absolute top-1/2 right-1/4 w-16 h-auto -translate-y-1/2">
 
         <!-- Towers -->
         <!-- Enemy Towers -->
-        <div class="absolute w-20 h-24 bg-red-800 border-4 border-red-900 rounded-md flex items-center justify-center font-medieval text-lg text-center"
-             [style.left.px]="TOWER_POSITIONS.enemy.king.x - 40" [style.top.px]="TOWER_POSITIONS.enemy.king.y - 48">
-            Rei<br/>{{ towerHP().enemy.king }}
-            <div class="absolute inset-0 pointer-events-none" [class.damage-flash]="towerFlashing().enemy.king"></div>
+        <div class="absolute" [style.left.px]="TOWER_POSITIONS.enemy.king.x" [style.top.px]="TOWER_POSITIONS.enemy.king.y" style="transform: translate(-50%, -60%); width: 100px;">
+             <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/tower_red_king.png" alt="Enemy King Tower" class="w-full h-auto" [class.damage-flash]="towerFlashing().enemy.king">
+             <div class="absolute -bottom-5 w-full text-center font-medieval text-lg text-white bg-red-900/80 rounded px-1 border border-red-500">{{ towerHP().enemy.king }}</div>
         </div>
-        <div class="absolute w-16 h-20 bg-red-700 border-4 border-red-800 rounded-md flex items-center justify-center font-medieval"
-             [style.left.px]="TOWER_POSITIONS.enemy.left.x - 32" [style.top.px]="TOWER_POSITIONS.enemy.left.y - 40">
-             {{ towerHP().enemy.left }}
-            <div class="absolute inset-0 pointer-events-none" [class.damage-flash]="towerFlashing().enemy.left"></div>
+        <div class="absolute" [style.left.px]="TOWER_POSITIONS.enemy.left.x" [style.top.px]="TOWER_POSITIONS.enemy.left.y" style="transform: translate(-50%, -55%); width: 80px;">
+             <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/tower_red_princess.png" alt="Enemy Princess Tower" class="w-full h-auto" [class.damage-flash]="towerFlashing().enemy.left">
+             <div class="absolute -bottom-4 w-full text-center font-medieval text-base text-white bg-red-900/80 rounded px-1 border border-red-500">{{ towerHP().enemy.left }}</div>
         </div>
-        <div class="absolute w-16 h-20 bg-red-700 border-4 border-red-800 rounded-md flex items-center justify-center font-medieval"
-             [style.left.px]="TOWER_POSITIONS.enemy.right.x - 32" [style.top.px]="TOWER_POSITIONS.enemy.right.y - 40">
-             {{ towerHP().enemy.right }}
-            <div class="absolute inset-0 pointer-events-none" [class.damage-flash]="towerFlashing().enemy.right"></div>
+         <div class="absolute" [style.left.px]="TOWER_POSITIONS.enemy.right.x" [style.top.px]="TOWER_POSITIONS.enemy.right.y" style="transform: translate(-50%, -55%); width: 80px;">
+             <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/tower_red_princess.png" alt="Enemy Princess Tower" class="w-full h-auto" [class.damage-flash]="towerFlashing().enemy.right">
+             <div class="absolute -bottom-4 w-full text-center font-medieval text-base text-white bg-red-900/80 rounded px-1 border border-red-500">{{ towerHP().enemy.right }}</div>
         </div>
         
-
         <!-- Player Towers -->
-        <div class="absolute w-20 h-24 bg-blue-800 border-4 border-blue-900 rounded-md flex items-center justify-center font-medieval text-lg text-center"
-             [style.left.px]="TOWER_POSITIONS.player.king.x - 40" [style.top.px]="TOWER_POSITIONS.player.king.y - 48">Rei<br/>{{ towerHP().player.king }}</div>
-        <div class="absolute w-16 h-20 bg-blue-700 border-4 border-blue-800 rounded-md flex items-center justify-center font-medieval"
-             [style.left.px]="TOWER_POSITIONS.player.left.x - 32" [style.top.px]="TOWER_POSITIONS.player.left.y - 40">{{ towerHP().player.left }}</div>
-        <div class="absolute w-16 h-20 bg-blue-700 border-4 border-blue-800 rounded-md flex items-center justify-center font-medieval"
-             [style.left.px]="TOWER_POSITIONS.player.right.x - 32" [style.top.px]="TOWER_POSITIONS.player.right.y - 40">{{ towerHP().player.right }}</div>
+        <div class="absolute" [style.left.px]="TOWER_POSITIONS.player.king.x" [style.top.px]="TOWER_POSITIONS.player.king.y" style="transform: translate(-50%, -60%); width: 100px;">
+             <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/tower_blue_king.png" alt="Player King Tower" class="w-full h-auto" [class.damage-flash]="towerFlashing().player.king">
+             <div class="absolute -bottom-5 w-full text-center font-medieval text-lg text-white bg-blue-900/80 rounded px-1 border border-blue-400">{{ towerHP().player.king }}</div>
+        </div>
+        <div class="absolute" [style.left.px]="TOWER_POSITIONS.player.left.x" [style.top.px]="TOWER_POSITIONS.player.left.y" style="transform: translate(-50%, -55%); width: 80px;">
+             <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/tower_blue_princess.png" alt="Player Princess Tower" class="w-full h-auto" [class.damage-flash]="towerFlashing().player.left">
+             <div class="absolute -bottom-4 w-full text-center font-medieval text-base text-white bg-blue-900/80 rounded px-1 border border-blue-400">{{ towerHP().player.left }}</div>
+        </div>
+         <div class="absolute" [style.left.px]="TOWER_POSITIONS.player.right.x" [style.top.px]="TOWER_POSITIONS.player.right.y" style="transform: translate(-50%, -55%); width: 80px;">
+             <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/arena/tower_blue_princess.png" alt="Player Princess Tower" class="w-full h-auto" [class.damage-flash]="towerFlashing().player.right">
+             <div class="absolute -bottom-4 w-full text-center font-medieval text-base text-white bg-blue-900/80 rounded px-1 border border-blue-400">{{ towerHP().player.right }}</div>
+        </div>
 
         <!-- Active Troops -->
         @for (troop of activeTroops(); track troop.id) {
             <app-troop [troop]="troop" />
         }
 
+        <!-- Spell Effects -->
+        @for (effect of spellEffects(); track effect.id) {
+            <div class="spell-explosion" 
+                 [style.left.px]="effect.position.x" 
+                 [style.top.px]="effect.position.y"
+                 [style.width.px]="effect.card.radius! * 2"
+                 [style.height.px]="effect.card.radius! * 2"
+                 [style.transform]="'translate(-50%, -50%)'"
+                 [style.background-color]="effect.card.id === 'fireball' ? 'rgba(255, 165, 0, 0.7)' : 'rgba(138, 43, 226, 0.6)'"
+                 [style.border]="'4px solid ' + (effect.card.id === 'fireball' ? 'rgba(255, 69, 0, 0.8)' : 'rgba(75, 0, 130, 0.8)')"
+                 >
+            </div>
+        }
+
         <!-- Game Over Overlay -->
         @if (gameStatus() !== 'playing') {
-          <div class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-50">
+          <div class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-50 animate-fade-in">
             <h2 class="font-medieval text-8xl" [class.text-green-400]="gameStatus() === 'win'" [class.text-red-500]="gameStatus() === 'lose'">
               @if(gameStatus() === 'win') { Vitória! }
               @if(gameStatus() === 'lose') { Derrota! }

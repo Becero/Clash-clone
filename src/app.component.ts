@@ -4,21 +4,38 @@ import { CardService } from './services/card.service';
 import { Card } from './models/card.model';
 import { CommonModule } from '@angular/common';
 import { ArenaComponent } from './components/arena/arena.component';
+import { CardDetailComponent } from './components/card-detail/card-detail.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, CardComponent, ArenaComponent]
+  imports: [CommonModule, CardComponent, ArenaComponent, CardDetailComponent]
 })
 export class AppComponent {
   private cardService = inject(CardService);
 
   DECK_SIZE = 8;
+  RARITY_ORDER: Card['rarity'][] = ['Divino', 'Heroico', 'Comum'];
 
   allCards = signal<Card[]>([]);
   deck = signal<(Card | null)[]>(Array(this.DECK_SIZE).fill(null));
   showArena = signal(false);
+  selectedCardForDetail = signal<Card | null>(null);
+
+  groupedCards = computed(() => {
+    const grouped: { [key in Card['rarity']]?: Card[] } = {};
+    this.allCards().forEach(card => {
+      if (!grouped[card.rarity]) {
+        grouped[card.rarity] = [];
+      }
+      grouped[card.rarity]!.push(card);
+    });
+
+    return this.RARITY_ORDER
+      .filter(rarity => grouped[rarity])
+      .map(rarity => ({ rarity, cards: grouped[rarity]! }));
+  });
 
   averageElixir = computed(() => {
     const cardsInDeck = this.deck().filter((card): card is Card => card !== null);
@@ -42,8 +59,17 @@ export class AppComponent {
     this.allCards.set(this.cardService.getCards());
   }
 
-  addCardToDeck(newCard: Card): void {
+  openCardDetail(card: Card): void {
+    this.selectedCardForDetail.set(card);
+  }
+  
+  closeCardDetail(): void {
+    this.selectedCardForDetail.set(null);
+  }
+
+  confirmAddToDeck(newCard: Card): void {
     if (this.isCardInDeck()(newCard)) {
+      this.closeCardDetail();
       return;
     }
 
@@ -55,6 +81,7 @@ export class AppComponent {
         return newDeck;
       });
     }
+    this.closeCardDetail();
   }
 
   removeCardFromDeck(index: number): void {

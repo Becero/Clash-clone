@@ -1,6 +1,12 @@
-<div class="w-16 h-16 rounded-full border-2 border-white overflow-hidden shadow-lg bg-black">
-    <img [src]="troop().card.imageUrl" [alt]="troop().card.name" class="w-full h-full object-cover">
+<!-- Troop 3D Model -->
+<div class="troop-model">
+    <div class="shadow"></div>
+    <div class="base"></div>
+    <img [src]="troop().card.troopImageUrl || troop().card.imageUrl" [alt]="troop().card.name" class="sprite" [class.hue-rotate-180]="troop().team === 'enemy'">
 </div>
-<div class="w-12 h-2 bg-slate-800 border border-black rounded-full mt-1">
-    <div class="h-full bg-green-500 rounded-full" [style.width.%]="(troop().hp / troop().card.hp!) * 100"></div>
+<!-- Health Bar -->
+<div class="w-12 h-2 bg-slate-900/70 border border-black rounded-full absolute -bottom-2">
+    <div class="h-full rounded-full"
+         [class]="troop().team === 'player' ? 'bg-green-500' : 'bg-red-500'" 
+         [style.width.%]="(troop().hp / troop().card.hp!) * 100"></div>
 </div>

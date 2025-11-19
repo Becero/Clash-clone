@@ -1,4 +1,3 @@
-
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Card } from '../../models/card.model';
 import { CommonModule } from '@angular/common';
@@ -11,36 +10,19 @@ import { CommonModule } from '@angular/common';
 })
 export class CardComponent {
   card = input.required<Card>();
-  isInDeck = input<boolean>(false);
+  // This input is no longer used visually but might be useful for other logic if needed.
+  isInDeck = input<boolean>(false); 
 
   rarityClass = computed(() => {
     switch (this.card().rarity) {
       case 'Comum':
         return 'bg-gradient-to-br from-slate-500 to-slate-700';
-      case 'Raro':
+      case 'Heroico':
         return 'bg-gradient-to-br from-orange-400 to-orange-600';
-      case 'Épico':
+      case 'Divino':
         return 'bg-gradient-to-br from-purple-500 to-purple-800';
-      case 'Lendário':
-        return 'bg-gradient-to-br from-cyan-400 via-yellow-300 to-pink-400 animate-pulse';
       default:
         return 'bg-gray-400';
     }
   });
-
-  rarityTextColor = computed(() => {
-    switch (this.card().rarity) {
-      case 'Comum':
-        return 'text-slate-300';
-      case 'Raro':
-        return 'text-orange-200';
-      case 'Épico':
-        return 'text-purple-300';
-      case 'Lendário':
-        return 'text-yellow-200';
-      default:
-        return 'text-gray-200';
-    }
-  });
-
 }

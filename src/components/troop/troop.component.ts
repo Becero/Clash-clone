@@ -8,9 +8,10 @@ import type { Troop } from '../arena/arena.component';
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[class]': '"absolute w-20 h-20 flex flex-col items-center"',
-    '[style.left.px]': 'troop().position.x - 40', // Center the troop
-    '[style.top.px]': 'troop().position.y - 40',
+    '[class]': '"absolute w-24 h-28 flex flex-col items-center justify-end"', // Increased height for 3D model
+    '[style.left.px]': 'troop().position.x - 48', // Center the troop
+    '[style.top.px]': 'troop().position.y - 80', // Adjust vertical position
+    '[style.z-index]': 'troop().position.y', // Simple depth sorting
   },
 })
 export class TroopComponent {

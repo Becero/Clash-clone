@@ -1,40 +1,24 @@
-
 @if (card()) {
   @let c = card()!;
-  <div class="card-container group aspect-[3/4] w-full p-1 rounded-lg relative cursor-pointer transition-transform duration-300 hover:scale-105 hover:-translate-y-2 shadow-lg"
+  <div class="card-container group aspect-[3/4] w-full p-1 rounded-lg relative cursor-pointer transition-transform duration-200 hover:scale-105"
     [class]="rarityClass()">
-    <div class="bg-slate-700 w-full h-full rounded-md relative overflow-hidden shadow-inner">
-      <!-- Image -->
-      <img [src]="c.imageUrl" [alt]="c.name" class="w-full h-1/2 object-cover">
+    <div class="w-full h-full rounded-md relative overflow-hidden shadow-inner bg-slate-900">
+      
+      <!-- Image as background -->
+      <img [src]="c.imageUrl" [alt]="c.name" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
       
       <!-- Elixir Cost -->
-      <div class="absolute top-2 right-2 w-10 h-10 bg-fuchsia-500 rounded-full flex items-center justify-center font-medieval text-2xl text-white border-2 border-fuchsia-200 shadow-md">
+      <div class="absolute top-1 left-1 w-8 h-8 sm:w-10 sm:h-10 bg-fuchsia-500/80 backdrop-blur-sm rounded-full flex items-center justify-center font-medieval text-xl sm:text-2xl text-white border-2 border-fuchsia-300/80 shadow-md">
         {{ c.elixirCost }}
       </div>
       
-      <!-- Card Body -->
-      <div class="p-2 flex flex-col justify-between h-1/2">
-        <div>
-          <!-- Name -->
-          <h3 class="font-medieval text-xl leading-tight truncate text-white">
-            {{ c.name }}
-          </h3>
-          <!-- Type and Rarity -->
-          <p class="text-xs font-bold" [class]="rarityTextColor()">
-            {{ c.type }} - {{ c.rarity }}
-          </p>
-        </div>
-        <!-- Description -->
-        <p class="text-slate-300 text-xs leading-snug">
-          {{ c.description }}
-        </p>
+      <!-- Card Name Banner -->
+      <div class="absolute bottom-0 left-0 right-0 p-1 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
+        <h3 class="font-medieval text-base sm:text-lg leading-tight truncate text-white text-center drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)]">
+          {{ c.name }}
+        </h3>
       </div>
 
-      @if (isInDeck()) {
-          <div class="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
-              <span class="font-medieval text-2xl text-amber-300">No Deck</span>
-          </div>
-      }
     </div>
   </div>
 }
