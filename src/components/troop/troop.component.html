@@ -1,0 +1,6 @@
+<div class="w-16 h-16 rounded-full border-2 border-white overflow-hidden shadow-lg bg-black">
+    <img [src]="troop().card.imageUrl" [alt]="troop().card.name" class="w-full h-full object-cover">
+</div>
+<div class="w-12 h-2 bg-slate-800 border border-black rounded-full mt-1">
+    <div class="h-full bg-green-500 rounded-full" [style.width.%]="(troop().hp / troop().card.hp!) * 100"></div>
+</div>

@@ -1,0 +1,89 @@
+<div class="w-full max-w-xl mx-auto flex flex-col items-center">
+    <!-- Header -->
+    <div class="w-full flex justify-between items-center mb-4 px-2">
+        <h2 class="font-medieval text-5xl text-amber-400">Arena</h2>
+        <button (click)="exit.emit()" class="bg-red-600 hover:bg-red-700 font-bold py-2 px-4 rounded-lg transition-colors">
+            Sair
+        </button>
+    </div>
+
+    <!-- Arena Board -->
+    <div #arenaBoard (click)="placeTroopOnArena($event)"
+         class="w-full aspect-[9/12] bg-gradient-to-b from-green-700 to-lime-600 border-4 border-yellow-800 rounded-lg relative overflow-hidden shadow-2xl"
+         [class.cursor-copy]="selectedCardIndex() !== null && gameStatus() === 'playing'"
+         style="--arena-w: 540px; --arena-h: 720px;">
+        
+        <!-- River -->
+        <div class="absolute top-1/2 left-0 w-full h-12 bg-blue-500 -translate-y-1/2 border-y-4 border-blue-300"></div>
+        <div class="absolute top-1/2 left-1/4 w-10 h-16 bg-yellow-700 -translate-y-1/2 border-2 border-yellow-900 rounded-sm"></div>
+        <div class="absolute top-1/2 right-1/4 w-10 h-16 bg-yellow-700 -translate-y-1/2 border-2 border-yellow-900 rounded-sm"></div>
+
+        <!-- Towers -->
+        <!-- Enemy Towers -->
+        <div class="absolute w-20 h-24 bg-red-800 border-4 border-red-900 rounded-md flex items-center justify-center font-medieval text-lg text-center"
+             [style.left.px]="TOWER_POSITIONS.enemy.king.x - 40" [style.top.px]="TOWER_POSITIONS.enemy.king.y - 48">
+            Rei<br/>{{ towerHP().enemy.king }}
+            <div class="absolute inset-0 pointer-events-none" [class.damage-flash]="towerFlashing().enemy.king"></div>
+        </div>
+        <div class="absolute w-16 h-20 bg-red-700 border-4 border-red-800 rounded-md flex items-center justify-center font-medieval"
+             [style.left.px]="TOWER_POSITIONS.enemy.left.x - 32" [style.top.px]="TOWER_POSITIONS.enemy.left.y - 40">
+             {{ towerHP().enemy.left }}
+            <div class="absolute inset-0 pointer-events-none" [class.damage-flash]="towerFlashing().enemy.left"></div>
+        </div>
+        <div class="absolute w-16 h-20 bg-red-700 border-4 border-red-800 rounded-md flex items-center justify-center font-medieval"
+             [style.left.px]="TOWER_POSITIONS.enemy.right.x - 32" [style.top.px]="TOWER_POSITIONS.enemy.right.y - 40">
+             {{ towerHP().enemy.right }}
+            <div class="absolute inset-0 pointer-events-none" [class.damage-flash]="towerFlashing().enemy.right"></div>
+        </div>
+        
+
+        <!-- Player Towers -->
+        <div class="absolute w-20 h-24 bg-blue-800 border-4 border-blue-900 rounded-md flex items-center justify-center font-medieval text-lg text-center"
+             [style.left.px]="TOWER_POSITIONS.player.king.x - 40" [style.top.px]="TOWER_POSITIONS.player.king.y - 48">Rei<br/>{{ towerHP().player.king }}</div>
+        <div class="absolute w-16 h-20 bg-blue-700 border-4 border-blue-800 rounded-md flex items-center justify-center font-medieval"
+             [style.left.px]="TOWER_POSITIONS.player.left.x - 32" [style.top.px]="TOWER_POSITIONS.player.left.y - 40">{{ towerHP().player.left }}</div>
+        <div class="absolute w-16 h-20 bg-blue-700 border-4 border-blue-800 rounded-md flex items-center justify-center font-medieval"
+             [style.left.px]="TOWER_POSITIONS.player.right.x - 32" [style.top.px]="TOWER_POSITIONS.player.right.y - 40">{{ towerHP().player.right }}</div>
+
+        <!-- Active Troops -->
+        @for (troop of activeTroops(); track troop.id) {
+            <app-troop [troop]="troop" />
+        }
+
+        <!-- Game Over Overlay -->
+        @if (gameStatus() !== 'playing') {
+          <div class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-50">
+            <h2 class="font-medieval text-8xl" [class.text-green-400]="gameStatus() === 'win'" [class.text-red-500]="gameStatus() === 'lose'">
+              @if(gameStatus() === 'win') { Vitória! }
+              @if(gameStatus() === 'lose') { Derrota! }
+            </h2>
+            <button (click)="exit.emit()" class="mt-8 bg-amber-500 hover:bg-amber-600 font-bold py-3 px-6 rounded-lg transition-colors text-2xl font-medieval">
+              Voltar ao Deck
+            </button>
+          </div>
+        }
+    </div>
+
+    <!-- Player Hand & Elixir -->
+    <div class="w-full mt-4">
+        <!-- Elixir Bar -->
+        <div class="h-6 w-full max-w-sm mx-auto bg-gray-700 rounded-full flex items-center p-1 border-2 border-fuchsia-400/50 mb-4">
+            <div class="h-full bg-fuchsia-500 rounded-full transition-all duration-200" [style.width.%]="(elixir() / 10) * 100"></div>
+            <span class="absolute w-full text-center font-bold text-white drop-shadow-md">{{ displayElixir() }} / 10</span>
+        </div>
+        
+        <!-- Hand -->
+        <div class="flex justify-center items-end gap-2 h-44">
+            @for (card of playerHand(); track $index) {
+                <div (click)="selectCard(card, $index)"
+                     class="w-24 transition-all duration-200"
+                     [class.border-4]="selectedCardIndex() === $index"
+                     [class.border-yellow-300]="selectedCardIndex() === $index"
+                     [class.-translate-y-4]="selectedCardIndex() === $index"
+                     [class.opacity-50]="elixir() < card.elixirCost && selectedCardIndex() !== $index">
+                    <app-card [card]="card" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
