@@ -1,0 +1,105 @@
+@if (guild(); as g) {
+<div class="p-4 flex flex-col h-full">
+  <!-- Header da Guilda -->
+  <header class="flex items-center gap-4 mb-4 p-4 bg-slate-800 rounded-lg border border-slate-700">
+    <img [src]="g.badgeUrl" [alt]="g.name" class="w-20 h-20">
+    <div>
+      <h1 class="font-medieval text-3xl text-amber-400">{{ g.name }}</h1>
+      <div class="text-slate-300">Total de Troféus: {{ g.totalTrophies }}</div>
+    </div>
+  </header>
+
+  <!-- Abas de Navegação -->
+  <div class="flex border-b border-slate-700 mb-4">
+    <button
+      (click)="selectTab('chat')"
+      class="flex-1 p-3 font-bold transition-colors font-medieval text-xl"
+      [class.text-blue-400]="activeTab() === 'chat'"
+      [class.border-b-2]="activeTab() === 'chat'"
+      [class.border-blue-400]="activeTab() === 'chat'"
+      [class.text-slate-400]="activeTab() !== 'chat'"
+    >
+      Chat
+    </button>
+    <button
+      (click)="selectTab('members')"
+      class="flex-1 p-3 font-bold transition-colors font-medieval text-xl"
+      [class.text-blue-400]="activeTab() === 'members'"
+      [class.border-b-2]="activeTab() === 'members'"
+      [class.border-blue-400]="activeTab() === 'members'"
+      [class.text-slate-400]="activeTab() !== 'members'"
+    >
+      Membros
+    </button>
+  </div>
+
+  <!-- Conteúdo das Abas -->
+  <div class="flex-grow overflow-y-auto pr-2">
+    @switch (activeTab()) {
+      @case ('chat') {
+        <div class="space-y-4">
+          @for (msg of chatHistory(); track msg.id) {
+            <!-- Mensagem de Texto -->
+            @if (msg.type === 'text') {
+              <div class="p-3 rounded-lg bg-slate-800/60 border border-slate-700">
+                <div class="flex justify-between items-baseline mb-1">
+                  <span class="font-bold text-white">{{ msg.authorName }}</span>
+                  <span class="text-xs text-slate-500">{{ msg.timestamp }}</span>
+                </div>
+                <p class="text-slate-300">{{ msg.message }}</p>
+              </div>
+            }
+            <!-- Pedido de Carta -->
+            @if (msg.type === 'cardRequest' && msg.request; as req) {
+              <div class="p-3 rounded-lg bg-blue-900/40 border border-blue-700">
+                 <div class="flex justify-between items-baseline mb-2">
+                  <span class="font-bold text-white">{{ msg.authorName }} pediu:</span>
+                  <span class="text-xs text-slate-500">{{ msg.timestamp }}</span>
+                </div>
+                <div class="flex items-center gap-4">
+                   <img [src]="req.cardImageUrl" [alt]="req.cardName" class="w-16 h-auto rounded-md">
+                   <div class="flex-grow">
+                      <h4 class="font-bold text-lg text-white">{{ req.cardName }}</h4>
+                      <div class="w-full bg-slate-700 rounded-full h-4 mt-1">
+                         <div class="bg-blue-500 h-full rounded-full" [style.width.%]="(req.donations / req.maxDonations) * 100"></div>
+                      </div>
+                      <div class="text-xs text-center mt-1 text-slate-300">{{req.donations}} / {{req.maxDonations}}</div>
+                   </div>
+                   <button class="bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-lg transition-colors">
+                      Doar
+                   </button>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      }
+      @case ('members') {
+        <div class="space-y-2">
+          @for (member of rankedMembers(); track member.id; let i = $index) {
+            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700">
+              <div class="flex items-center gap-3">
+                <span class="font-medieval text-xl w-8 text-center text-slate-400">{{ i + 1 }}</span>
+                <div>
+                  <div class="font-bold text-white">{{ member.name }}</div>
+                  <div class="text-sm" [ngClass]="{
+                    'text-yellow-400': member.role === 'Mestre',
+                    'text-sky-400': member.role === 'Lord',
+                    'text-slate-400': member.role === 'Aventureiro'
+                  }">
+                    {{ member.role }}
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-amber-400 font-medieval text-lg">
+                 <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/icons/trophy.png" class="w-5 h-5" />
+                 {{ member.trophies }}
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>
+}

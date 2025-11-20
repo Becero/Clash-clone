@@ -1,0 +1,78 @@
+<!-- Backdrop -->
+<div
+  (click)="onClose()"
+  class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 animate-fade-in"
+></div>
+
+<!-- Modal Panel -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div
+    class="w-full max-w-md max-h-[90vh] bg-slate-800/90 border-2 border-orange-500/50 rounded-2xl shadow-2xl flex flex-col animate-zoom-in"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div class="p-4 border-b border-slate-700 text-center">
+      <h2 class="font-medieval text-3xl text-orange-400">
+        Caminho de Conquistas
+      </h2>
+      <p class="text-slate-300">
+        Vença batalhas para ganhar recompensas! (+50 Vitória, -25 Derrota)
+      </p>
+    </div>
+
+    <!-- Progress Info -->
+    <div class="p-4">
+        <div class="flex justify-between items-center mb-2 font-medieval text-xl">
+            <span class="text-slate-400">Progresso</span>
+            <span class="text-white">{{ points() }} / {{ MAX_POINTS }}</span>
+        </div>
+      <div class="w-full bg-gray-900 rounded-full h-4 border border-slate-600">
+        <div
+          class="bg-gradient-to-r from-orange-500 to-yellow-400 h-full rounded-full"
+          [style.width.%]="progressPercent()"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Rewards List -->
+    <div class="flex-grow overflow-y-auto px-4 pb-4">
+      <div class="space-y-3">
+        @for (item of rewards; track item.pointsRequired) {
+          <div
+            class="flex items-center justify-between p-3 rounded-lg border"
+            [class.border-green-500]="points() >= item.pointsRequired"
+            [class.bg-green-900/30]="points() >= item.pointsRequired"
+            [class.border-slate-700]="points() < item.pointsRequired"
+            [class.bg-slate-900/50]="points() < item.pointsRequired"
+            [class.opacity-60]="points() < item.pointsRequired"
+          >
+            <div class="flex items-center gap-4">
+              <img [src]="item.reward.imageUrl" [alt]="item.reward.name" class="w-12 h-12" />
+              <div>
+                <div class="font-bold text-white">{{ item.reward.name }}</div>
+                <div class="text-sm text-slate-400">Requer {{ item.pointsRequired }} pontos</div>
+              </div>
+            </div>
+            
+            @if (points() >= item.pointsRequired) {
+                <div class="text-green-400 font-medieval text-lg">
+                    Coletado!
+                </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="p-4 border-t border-slate-700">
+      <button
+        type="button"
+        (click)="onClose()"
+        class="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:scale-105 text-white font-bold text-xl font-medieval py-3 px-12 rounded-lg transition-transform shadow-lg"
+      >
+        OK
+      </button>
+    </div>
+  </div>
+</div>

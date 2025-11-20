@@ -1,0 +1,50 @@
+<div class="p-4 flex flex-col h-full">
+  <header class="text-center mb-6">
+    <h1 class="font-medieval text-4xl text-amber-400">Hub de Guildas</h1>
+    <p class="text-slate-400">Encontre uma guilda para se juntar ou crie a sua!</p>
+  </header>
+
+  <!-- Ações -->
+  <div class="flex gap-4 mb-6">
+    <button class="flex-1 bg-green-600 hover:bg-green-700 font-medieval text-xl p-3 rounded-lg transition-colors">
+      Criar Guilda
+    </button>
+  </div>
+
+  <!-- Barra de Busca -->
+  <div class="mb-4">
+    <input 
+      type="text"
+      placeholder="Pesquisar guildas..."
+      class="w-full p-3 bg-slate-800 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      [value]="searchTerm()"
+      (input)="onSearch($event)"
+    />
+  </div>
+
+  <!-- Lista de Guildas -->
+  <div class="flex-grow overflow-y-auto pr-2">
+    <div class="space-y-3">
+      @for (guild of searchResults(); track guild.id) {
+        <div class="bg-slate-800/70 p-4 rounded-lg border border-slate-700 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <img [src]="guild.badgeUrl" [alt]="guild.name" class="w-14 h-14">
+            <div>
+              <h3 class="font-medieval text-xl text-white">{{ guild.name }}</h3>
+              <div class="text-sm text-slate-400 flex items-center gap-4">
+                <span>
+                  <img src="https://cdn.jsdelivr.net/gh/rodolfo-s/rpg-deck-builder-assets@main/icons/trophy.png" class="w-4 h-4 inline -mt-1 mr-1" />
+                  {{ guild.totalTrophies }}
+                </span>
+                <span>{{ guild.memberCount }} / 50 membros</span>
+              </div>
+            </div>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-lg transition-colors">
+            Entrar
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
